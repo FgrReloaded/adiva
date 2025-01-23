@@ -15,6 +15,9 @@ import {
   Animated,
 } from 'react-native';
 
+import { authClient } from '~/auth-client';
+import { authService } from '~/lib/auth/auth';
+
 const { width } = Dimensions.get('window');
 
 const SpecialtyButton = ({
@@ -204,7 +207,9 @@ const Doctors = () => {
       <SafeAreaView style={styles.container}>
         <View style={styles.header}>
           <View>
-            <Text style={[styles.greeting, { fontFamily: 'Poppins' }]}>Hello Nitish 👋</Text>
+            <Text style={[styles.greeting, { fontFamily: 'Poppins' }]}>
+              Hello {authService.getCurrentUser()?.displayName} 👋
+            </Text>
             <Text style={[styles.subtitle, { fontFamily: 'Poppins' }]}>Find your specialist</Text>
           </View>
           <View style={styles.headerIcons}>

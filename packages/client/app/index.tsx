@@ -103,7 +103,7 @@ export default function Home() {
               </View>
               <View>
                 <Text font="Poppins" className="text-2xl text-gray-800">
-                  Hello, Pragya!
+                  Hello, {authService.getCurrentUser()?.displayName}
                 </Text>
                 <Text font="Poppins" className="text-gray-500">
                   Have a great day ahead
