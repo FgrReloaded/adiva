@@ -132,7 +132,7 @@ export default function Home() {
             )}
           </View>
         </View>
-        <View className="p-4">
+        <View className="p-2">
           <View className="mb-4 rounded-2xl bg-white py-4">
             <View className="mb-4 flex-row items-center justify-between px-4">
               <Text font="Poppins" className="text-lg text-gray-800">
@@ -200,7 +200,7 @@ export default function Home() {
             bgColor="bg-cyan-500"
             onPress={() => router.push('/tracker')}
           />
-        </View>{' '}
+        </View>
       </ScrollView>
 
       <View className="absolute bottom-6 right-6">
