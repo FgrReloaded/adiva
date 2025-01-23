@@ -112,7 +112,10 @@ export default function Home() {
             </View>
             {authService.getCurrentUser() ? (
               <TouchableOpacity
-                onPress={async () => await authService.signOut()}
+                onPress={async () => {
+                  await authService.signOut();
+                  router.push('/');
+                }}
                 className="rounded-lg bg-blue-500 px-4 py-2">
                 <Text font="Poppins" className="text-white">
                   Logout
@@ -198,7 +201,7 @@ export default function Home() {
             onPress={() => router.push('/tracker')}
           />
         </View>{' '}
-      </ScrollView >
+      </ScrollView>
 
       <View className="absolute bottom-6 right-6">
         <View className={`${isOpen ? 'flex' : 'hidden'} mb-4`}>
@@ -214,6 +217,6 @@ export default function Home() {
           </Animated.View>
         </TouchableOpacity>
       </View>
-    </View >
+    </View>
   );
 }
