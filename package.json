@@ -12,5 +12,8 @@
     "db:local": "bun run --filter @adiva/server db:local",
     "db:push": "bun run --filter @adiva/server db:push",
     "clean": "rm -rf node_modules packages/client/node_modules packages/server/node_modules bun.lockb packages/client/bun.lockb packages/server/bun.lockb"
+  },
+  "devDependencies": {
+    "@types/react-native": "^0.72.8"
   }
 }

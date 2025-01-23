@@ -1,4 +1,5 @@
 import { MaterialIcons, Ionicons } from '@expo/vector-icons';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
 import { Stack } from 'expo-router';
 import React, { useRef, useState } from 'react';
@@ -7,11 +8,21 @@ import { StyleSheet, View, TouchableOpacity, Text, Animated } from 'react-native
 import ResultScanner from '~/components/Sheet/Result';
 
 interface MedicineInfo {
+  name: string;
   dosage: string;
   unit: string;
   weight: string;
   weightUnit: string;
+  description: string;
+  sideEffects: string[];
+  warnings: string[];
+  alternatives?: string[];
+  interactions?: string[];
+  storage?: string;
+  validity?: string;
 }
+
+const genAI = new GoogleGenerativeAI('AIzaSyCrRG2yo6jfoUuMG8P_qdxxCGJjQqcpdwU');
 
 const MedicineScanner = () => {
   const [scanning, setScanning] = useState(false);
@@ -21,6 +32,8 @@ const MedicineScanner = () => {
   const [cameraType, setCameraType] = useState<CameraType>('back');
   const [permission, requestPermission] = useCameraPermissions();
   const sheetRef = useRef<{ openSheet: () => void }>(null);
+  const cameraRef = useRef(null);
+  const [imageUri, setImageUri] = useState<string | null>(null);
 
   React.useEffect(() => {
     (async () => {
@@ -47,20 +60,78 @@ const MedicineScanner = () => {
     }
   }, [scanning]);
 
-  const handleScan = () => {
-    setScanning(true);
-    setTimeout(() => {
-      setMedicineInfo({
-        dosage: '70',
-        unit: 'mg',
-        weight: '16',
-        weightUnit: 'kg',
-      });
-      setScanning(false);
+  const analyzeMedicineImage = async (imageBase64: string) => {
+    try {
+      const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+
+      const prompt = `Please analyze this medicine image and provide comprehensive details in the following JSON format:
+        {
+          "name": "Medicine name",
+          "dosage": "Dosage amount",
+          "unit": "Dosage unit (mg/ml/etc)",
+          "weight": "Weight amount",
+          "weightUnit": "Weight unit",
+          "description": "Detailed description including primary uses and benefits",
+          "sideEffects": ["List of common side effects"],
+          "warnings": ["Important warnings and contraindications"],
+          "alternatives": ["Similar alternative medicines"],
+          "interactions": ["Known drug interactions"],
+          "storage": "Storage instructions",
+          "validity": "Expiry information"
+        }
+        If you cannot read the medicine details from the image clearly, suggest possible matches based on visible characteristics and mark them as "suggested".`;
+
+      const result = await model.generateContent([
+        prompt,
+        {
+          inlineData: {
+            mimeType: 'image/jpeg',
+            data: imageBase64,
+          },
+        },
+      ]);
+
+      const response = await result.response;
+      let responseText = response?.candidates?.[0]?.content.parts[0].text?.slice(7);
+      responseText = responseText?.slice(0, -3);
+
+      console.log('Response text:', responseText);
+
+      if (!responseText) {
+        console.error('Error analyzing medicine: No response text');
+        return;
+      }
+      const medicineData = JSON.parse(responseText);
+
+      console.log('Medicine data:', medicineData);
+
+      setMedicineInfo(medicineData);
       if (sheetRef.current) {
         sheetRef.current.openSheet();
       }
-    }, 5000);
+    } catch (error) {
+      console.error('Error analyzing medicine:', error);
+    } finally {
+      setScanning(false);
+    }
+  };
+
+  const handleScan = async () => {
+    if (!cameraRef.current) return;
+
+    setScanning(true);
+    try {
+      const photo = await cameraRef.current.takePictureAsync({
+        base64: true,
+        quality: 0.8,
+      });
+
+      setImageUri(photo.uri);
+      await analyzeMedicineImage(photo.base64);
+    } catch (error) {
+      console.error('Error taking picture:', error);
+      setScanning(false);
+    }
   };
 
   if (!permission?.granted) {
@@ -71,7 +142,11 @@ const MedicineScanner = () => {
     <>
       <Stack.Screen options={{ title: 'Scanner', headerShown: false }} />
       <View style={styles.container}>
-        <CameraView style={styles.camera} facing={cameraType} enableTorch={flashMode === 'on'}>
+        <CameraView
+          ref={cameraRef}
+          style={styles.camera}
+          facing={cameraType}
+          enableTorch={flashMode === 'on'}>
           <View style={styles.header}>
             <View style={styles.titleContainer}>
               <MaterialIcons name="medication" size={24} color="white" />
@@ -103,21 +178,6 @@ const MedicineScanner = () => {
               )}
             </View>
 
-            {medicineInfo && (
-              <View style={styles.infoContainer}>
-                <View style={styles.infoCard}>
-                  <MaterialIcons name="medication" size={24} color="#4CAF50" />
-                  <Text style={styles.infoValue}>{medicineInfo.dosage}</Text>
-                  <Text style={styles.infoUnit}>{medicineInfo.unit}</Text>
-                </View>
-                <View style={styles.infoCard}>
-                  <MaterialIcons name="scale" size={24} color="#2196F3" />
-                  <Text style={styles.infoValue}>{medicineInfo.weight}</Text>
-                  <Text style={styles.infoUnit}>{medicineInfo.weightUnit}</Text>
-                </View>
-              </View>
-            )}
-
             <View style={styles.controls}>
               {flashMode === 'off' ? (
                 <TouchableOpacity
@@ -148,7 +208,7 @@ const MedicineScanner = () => {
             </View>
           </View>
         </CameraView>
-        <ResultScanner ref={sheetRef} />
+        <ResultScanner medicineInfo={medicineInfo} ref={sheetRef} />
       </View>
     </>
   );
