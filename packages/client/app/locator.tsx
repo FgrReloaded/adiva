@@ -21,8 +21,8 @@ const CustomMarker = ({ type }) => {
 export default function App() {
   const mapRef = useRef<MapView>(null);
   const [region, setRegion] = useState({
-    latitude: 26.1918624,
-    longitude: 91.7459607,
+    latitude: 27.604376,
+    longitude: 77.596860,
     latitudeDelta: 0.008,
     longitudeDelta: 0.009,
   });
@@ -331,7 +331,7 @@ export default function App() {
           style={styles.map}
           showsUserLocation
           initialRegion={region}>
-          <MapViewDirections
+          {/* <MapViewDirections
             origin={origin}
             destination={destination}
             apikey="AIzaSyCMgVoITWEZsSnLbPRlZjGwMkZYfYvrwmg"
@@ -344,7 +344,7 @@ export default function App() {
               console.log(`Distance: ${result.distance} km`);
               console.log(`Duration: ${result.duration} min.`);
             }}
-          />
+          /> */}
           {markers.map((marker) => (
             <Marker key={marker.id} coordinate={marker.coordinate}>
               <CustomMarker type={marker.type} />
