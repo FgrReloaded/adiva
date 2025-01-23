@@ -1,14 +1,7 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import React from 'react';
-import {
-  View,
-  Text,
-  ScrollView,
-  StyleSheet,
-  Dimensions,
-  TouchableOpacity,
-} from 'react-native';
+import { View, Text, ScrollView, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
 
 const SPACING = 16;
 
@@ -147,7 +140,7 @@ const HealthMetricsDashboard = () => {
       trend: 10,
       description: 'Based on daily logs',
       progress: 80,
-    }
+    },
   ];
 
   return (
@@ -200,7 +193,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: SPACING,
     backgroundColor: '#FFFFFF',
-    height: 220
+    height: 220,
   },
   cardHeader: {
     flexDirection: 'row',

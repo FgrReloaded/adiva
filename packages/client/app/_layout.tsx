@@ -3,14 +3,15 @@ import 'expo-dev-client';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { DarkTheme, DefaultTheme, Theme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
+import { Slot, Stack, useRouter, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { Platform } from 'react-native';
+import { Platform, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import { useColorScheme } from '~/lib/useColorScheme';
 import { NAV_THEME } from '~/theme';
+import { authClient } from '~/auth-client';
 
 const LIGHT_THEME: Theme = {
   ...DefaultTheme,
@@ -30,6 +31,26 @@ const DARK_THEME: Theme = {
 
 export { ErrorBoundary } from 'expo-router';
 
+function InitialLayout() {
+  const { data: session, isPending } = authClient.useSession();
+  const segments = useSegments();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isPending) {
+      const inAuthGroup = segments[0] === '(auth)';
+
+      if (!session && !inAuthGroup) {
+        router.replace('/(auth)/sign-in');
+      } else if (session && inAuthGroup) {
+        router.replace('/');
+      }
+    }
+  }, [session, isPending, segments]);
+
+  return <Slot />;
+}
+
 export default function RootLayout() {
   const hasMounted = useRef(false);
   const { colorScheme, isDarkColorScheme } = useColorScheme();
@@ -37,6 +58,8 @@ export default function RootLayout() {
 
   const [loaded, error] = useFonts({
     OpenSans: require('../assets/OpenSans.ttf'),
+    Poppins: require('../assets/Poppins-Regular.ttf'),
+    'Poppins-Bold': require('../assets/Poppins-Bold.ttf'),
   });
 
   useIsomorphicLayoutEffect(() => {
@@ -61,20 +84,13 @@ export default function RootLayout() {
       <GestureHandlerRootView style={{ flex: 1 }}>
         <BottomSheetModalProvider>
           <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
-            <Stack>
-              <Stack.Screen name="index" options={INDEX_OPTIONS} />
-            </Stack>
+            <InitialLayout />
           </ThemeProvider>
         </BottomSheetModalProvider>
       </GestureHandlerRootView>
     </>
   );
 }
-
-const INDEX_OPTIONS = {
-  headerLargeTitle: true,
-  title: 'Adiva',
-} as const;
 
 const useIsomorphicLayoutEffect =
   Platform.OS === 'web' && typeof window === 'undefined' ? useEffect : useLayoutEffect;

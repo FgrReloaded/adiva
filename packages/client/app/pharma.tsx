@@ -73,7 +73,9 @@ const HealthStoreExpo = () => {
           style={styles.storeInfo}>
           <Image source={require('../assets/medicine.jpg')} style={styles.storeImage} />
           <View style={styles.storeDetails}>
-            <Text font="PoppinsBold" style={styles.storeName}>{store.name}</Text>
+            <Text font="PoppinsBold" style={styles.storeName}>
+              {store.name}
+            </Text>
             <View style={styles.ratingContainer}>
               <View style={styles.ratingBadge}>
                 <Feather name="star" size={14} color="#FFB800" />
@@ -91,7 +93,9 @@ const HealthStoreExpo = () => {
 
         {selectedStore === store.id && (
           <View style={styles.productsContainer}>
-            <Text font="PoppinsSemiBold" style={styles.sectionTitle}>Featured Products</Text>
+            <Text font="PoppinsSemiBold" style={styles.sectionTitle}>
+              Featured Products
+            </Text>
             <ScrollView
               horizontal
               showsHorizontalScrollIndicator={false}

@@ -30,7 +30,7 @@ const SpecialtyButton = ({
 }) => (
   <TouchableOpacity style={styles.specialtyButton} onPress={onPress}>
     <View style={[styles.iconContainer, isSelected && styles.selectedIconContainer]}>
-      <Ionicons name={icon} size={24} color={isSelected ? '#fff' : '#5B85D9'} />
+      <Ionicons name={icon as any} size={24} color={isSelected ? '#fff' : '#5B85D9'} />
     </View>
     <Text
       style={[
