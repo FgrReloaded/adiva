@@ -9,9 +9,6 @@ import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Platform, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
-import { authClient } from '~/auth-client';
-import { useProtectedRoute } from '~/hooks/useProtectedRoute';
-import { AuthProvider } from '~/lib/auth/AuthContext';
 import { useColorScheme } from '~/lib/useColorScheme';
 import { NAV_THEME } from '~/theme';
 
@@ -34,7 +31,6 @@ const DARK_THEME: Theme = {
 export { ErrorBoundary } from 'expo-router';
 
 function InitialLayout() {
-  useProtectedRoute();
   return <Slot />;
 }
 
@@ -69,11 +65,11 @@ export default function RootLayout() {
     <>
       <StatusBar style={isDarkColorScheme ? 'light' : 'dark'} />
       <GestureHandlerRootView style={{ flex: 1 }}>
-          <BottomSheetModalProvider>
-            <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
-              <Slot />
-            </ThemeProvider>
-          </BottomSheetModalProvider>
+        <BottomSheetModalProvider>
+          <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
+            <Slot />
+          </ThemeProvider>
+        </BottomSheetModalProvider>
       </GestureHandlerRootView>
     </>
   );
