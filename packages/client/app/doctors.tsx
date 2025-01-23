@@ -15,7 +15,6 @@ import {
   Animated,
 } from 'react-native';
 
-import { authClient } from '~/auth-client';
 import { authService } from '~/lib/auth/auth';
 
 const { width } = Dimensions.get('window');

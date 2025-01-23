@@ -5,8 +5,6 @@ import { useState } from 'react';
 import { View, TextInput, TouchableOpacity } from 'react-native';
 import { authService } from '~/lib/auth/auth';
 
-// import { authClient } from '~/auth-client';
-
 export default function SignUp() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -67,8 +65,9 @@ export default function SignUp() {
         </View>
 
         <TouchableOpacity
-          className={`mt-4 rounded-xl px-5 py-4 ${loading ? 'bg-blue-400' : 'bg-blue-600'
-            } shadow-lg shadow-blue-300`}
+          className={`mt-4 rounded-xl px-5 py-4 ${
+            loading ? 'bg-blue-400' : 'bg-blue-600'
+          } shadow-lg shadow-blue-300`}
           onPress={handleSignUp}
           disabled={loading}>
           <Text font="Poppins" className="text-center text-lg font-semibold text-white">

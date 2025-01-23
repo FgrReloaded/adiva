@@ -11,7 +11,6 @@ import {
   Platform,
 } from 'react-native';
 
-import { authClient } from '~/auth-client';
 import { authService } from '~/lib/auth/auth';
 
 export default function SignIn() {
