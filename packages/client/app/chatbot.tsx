@@ -1,8 +1,10 @@
 import { Ionicons } from '@expo/vector-icons';
+import { GoogleGenerativeAI } from '@google/generative-ai';
+import { Text } from 'expo-dynamic-fonts';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {
   View,
   TextInput,
@@ -13,10 +15,34 @@ import {
   StatusBar,
   Platform,
   KeyboardAvoidingView,
+  Alert,
 } from 'react-native';
-import { Text } from 'expo-dynamic-fonts'
+
+const genAI = new GoogleGenerativeAI('AIzaSyCrRG2yo6jfoUuMG8P_qdxxCGJjQqcpdwU');
+
+const SYSTEM_PROMPT = `You are PureCare AI, a compassionate and knowledgeable women's health assistant.
+Your primary focus is on providing accurate, helpful information about women's health, hygiene, and wellness.
+Key guidelines:
+- Always maintain a professional yet empathetic tone
+- Provide evidence-based information
+- Recommend consulting healthcare professionals for serious concerns
+- Focus on preventive care and education
+- Be sensitive to cultural and personal preferences
+- Never provide medical diagnoses
+- Emphasize the importance of regular check-ups`;
 
 const ChatScreen = () => {
+  const [messages, setMessages] = useState([
+    {
+      role: 'system',
+      content:
+        "Hi, I'm PureCare AI Assistant, your personal health assistant. How can I help you today?",
+    },
+  ]);
+  const [inputMessage, setInputMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const scrollViewRef = useRef(null);
+
   const [loaded, error] = useFonts({
     Poppins: require('../assets/Poppins-Regular.ttf'),
   });
@@ -26,6 +52,80 @@ const ChatScreen = () => {
       SplashScreen.hideAsync();
     }
   }, [loaded, error]);
+
+  const handleSend = async () => {
+    if (!inputMessage.trim()) return;
+
+    const userMessage = {
+      role: 'user',
+      content: inputMessage.trim(),
+    };
+
+    setMessages((prev) => [...prev, userMessage]);
+    setInputMessage('');
+    setIsLoading(true);
+
+    try {
+      const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+      const chat = model.startChat({
+        history: [
+          {
+            role: 'user',
+            parts: [{ text: SYSTEM_PROMPT }],
+          },
+          {
+            role: 'model',
+            parts: [
+              {
+                text: "Hi, I'm PureCare AI Assistant, your personal health assistant. How can I help you today?",
+              },
+            ],
+          },
+        ],
+        generationConfig: {
+          maxOutputTokens: 1000,
+          temperature: 0.7,
+          topP: 0.8,
+          topK: 40,
+        },
+      });
+
+      const result = await chat.sendMessage(inputMessage);
+      const response = await result.response;
+      const assistantMessage = {
+        role: 'system',
+        content: response.text(),
+      };
+
+      setMessages((prev) => [...prev, assistantMessage]);
+    } catch (error) {
+      console.error('Error sending message:', error);
+      Alert.alert('Error', 'Unable to get a response. Please try again later.', [{ text: 'OK' }]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    scrollViewRef.current?.scrollToEnd({ animated: true });
+  }, [messages]);
+
+  const renderMessage = (message: { role: string; content: string }, index: number) => {
+    const isAssistant = message.role === 'system';
+    return (
+      <View
+        key={index}
+        style={[styles.messageBubble, isAssistant ? styles.assistantBubble : styles.userBubble]}>
+        <Text
+          style={[
+            styles.messageText,
+            isAssistant ? styles.assistantBubbleText : styles.userBubbleText,
+          ]}>
+          {message.content}
+        </Text>
+      </View>
+    );
+  };
 
   return (
     <>
@@ -41,80 +141,27 @@ const ChatScreen = () => {
             />
           </View>
           <View style={styles.headerContent}>
-            <Text style={[styles.headerText]} font="Poppins">PureCare AI</Text>
+            <Text style={[styles.headerText]} font="Poppins">
+              PureCare AI
+            </Text>
             <Text style={[styles.headerSubText, { fontFamily: 'Poppins' }]}>
               Your Health Assistant
             </Text>
           </View>
         </View>
 
-        <ScrollView style={styles.chatSection} contentContainerStyle={styles.chatContent}>
-          <View style={styles.assistantBubble}>
-            <Text style={styles.assistantBubbleText}>
-              Hi, I'm PureCare Ai Assistant, your personal health assistant. How can I help you today?
-            </Text>
-          </View>
-
-          <View style={styles.userBubble}>
-            <Text style={styles.userBubbleText}>
-              Hi, I've been experiencing irregular periods and unusual discharge lately. I'm a bit concerned.
-            </Text>
-          </View>
-
-          <View style={styles.assistantBubble}>
-            <Text style={styles.assistantBubbleText}>
-              I understand your concern. Let me help you assess the situation. Have you noticed any changes in your cycle length or flow compared to your usual pattern?
-            </Text>
-          </View>
-
-          <View style={styles.userBubble}>
-            <Text style={styles.userBubbleText}>
-              Yes, my cycle has been unpredictable for the past 2 months. Sometimes it's early, sometimes late. And the discharge has a different color than usual.
-            </Text>
-          </View>
-
-          <View style={styles.assistantBubble}>
-            <Text style={styles.assistantBubbleText}>
-              Based on your symptoms, this could be related to several factors. I'm checking your recent health data. I can see your stress levels have been elevated, and there are changes in your sleep patterns. These can affect your cycle.
-            </Text>
-          </View>
-
-          <View style={styles.userBubble}>
-            <Text style={styles.userBubbleText}>
-              Yes, work has been quite stressful lately. Should I be worried about the discharge?
-            </Text>
-          </View>
-
-          <View style={styles.assistantBubble}>
-            <Text style={styles.assistantBubbleText}>
-              While changes in discharge can be normal, it's important to monitor any unusual changes. I recommend scheduling an appointment with your gynecologist for a proper examination. Would you like me to show you available appointments?
-            </Text>
-          </View>
-
-          <View style={styles.userBubble}>
-            <Text style={styles.userBubbleText}>
-              Yes, please. And is there anything I should do in the meantime?
-            </Text>
-          </View>
-
-          <View style={styles.assistantBubble}>
-            <Text style={styles.assistantBubbleText}>
-              I recommend maintaining good hygiene practices, wearing breathable cotton underwear, and tracking your symptoms in the app. I'm also noticing your iron levels are slightly low - increasing iron-rich foods might help. Would you like some dietary recommendations?
-            </Text>
-          </View>
-
-          <View style={styles.userBubble}>
-            <Text style={styles.userBubbleText}>
-              That would be helpful, thank you. I'll make sure to track everything carefully.
-            </Text>
-          </View>
-
-          <View style={styles.assistantBubble}>
-            <Text style={styles.assistantBubbleText}>
-              I've added detailed tracking reminders to your dashboard. I'll also send you information about iron-rich foods and stress management techniques. Remember, your gynecologist will be best placed to provide a proper diagnosis. I've found three available appointments for next week - would you like to see them?
-            </Text>
-          </View>
+        <ScrollView
+          ref={scrollViewRef}
+          style={styles.chatSection}
+          contentContainerStyle={styles.chatContent}>
+          {messages.map(renderMessage)}
+          {isLoading && (
+            <View style={styles.loadingContainer}>
+              <Text style={styles.loadingText}>PureCare AI is typing...</Text>
+            </View>
+          )}
         </ScrollView>
+
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 90}
@@ -123,16 +170,26 @@ const ChatScreen = () => {
             <View style={styles.inputWrapper}>
               <TextInput
                 style={styles.input}
-                placeholder="Message FgrAI..."
+                placeholder="Message PureCare AI..."
                 placeholderTextColor="#9BA3B2"
                 multiline
+                value={inputMessage}
+                onChangeText={setInputMessage}
               />
               <TouchableOpacity style={styles.attachButton}>
                 <Text style={styles.attachButtonText}>📎</Text>
               </TouchableOpacity>
             </View>
-            <TouchableOpacity style={styles.sendButton}>
-              <Ionicons name="send" size={24} color="#FFFFFF" style={styles.sendButtonText} />
+            <TouchableOpacity
+              style={[styles.sendButton, !inputMessage.trim() && styles.sendButtonDisabled]}
+              onPress={handleSend}
+              disabled={!inputMessage.trim() || isLoading}>
+              <Ionicons
+                name="send"
+                size={24}
+                color={!inputMessage.trim() ? '#CCCCCC' : '#FFFFFF'}
+                style={styles.sendButtonText}
+              />
             </TouchableOpacity>
           </View>
         </KeyboardAvoidingView>
@@ -142,6 +199,14 @@ const ChatScreen = () => {
 };
 
 const styles = StyleSheet.create({
+  messageBubble: {
+    marginVertical: 4,
+    maxWidth: '80%',
+  },
+  messageText: {
+    fontSize: 16,
+    lineHeight: 24,
+  },
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
@@ -160,6 +225,9 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: '700',
     letterSpacing: 0.8,
+  },
+  sendButtonDisabled: {
+    backgroundColor: '#E5E7EB',
   },
   headerSubText: {
     color: '#4A4AFF',
@@ -193,6 +261,17 @@ const styles = StyleSheet.create({
     lineHeight: 24,
     fontWeight: '500',
     fontFamily: 'Poppins',
+  },
+  loadingContainer: {
+    padding: 12,
+    backgroundColor: '#F3F4F6',
+    borderRadius: 16,
+    alignSelf: 'flex-start',
+    marginBottom: 12,
+  },
+  loadingText: {
+    color: '#6B7280',
+    fontStyle: 'italic',
   },
   assistantBubble: {
     alignSelf: 'flex-start',

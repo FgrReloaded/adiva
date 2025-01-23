@@ -22,7 +22,7 @@ export default function App() {
   const mapRef = useRef<MapView>(null);
   const [region, setRegion] = useState({
     latitude: 27.604376,
-    longitude: 77.596860,
+    longitude: 77.59686,
     latitudeDelta: 0.008,
     longitudeDelta: 0.009,
   });
@@ -46,201 +46,91 @@ export default function App() {
     {
       id: 1,
       type: 'person',
-      name: 'Toilet 1',
-      address: 'Public Toilet',
+      name: 'Location 1',
       coordinate: {
-        latitude: 26.2033751,
-        longitude: 91.6935123,
+        latitude: 27.609876,
+        longitude: 77.592341,
       },
     },
     {
       id: 2,
       type: 'person',
-      name: 'Toilet 2',
-      address: 'Public Toilet',
+      name: 'Location 2',
       coordinate: {
-        latitude: 26.2048969,
-        longitude: 91.6857321,
+        latitude: 27.601234,
+        longitude: 77.599876,
       },
     },
     {
       id: 3,
       type: 'person',
-      name: 'Toilet 3',
-      address: 'Public Toilet',
+      name: 'Location 3',
       coordinate: {
-        latitude: 26.1608988,
-        longitude: 91.7575553,
+        latitude: 27.607654,
+        longitude: 77.594567,
       },
     },
     {
       id: 4,
       type: 'person',
-      name: 'Toilet 4',
-      address: 'Public Toilet',
+      name: 'Location 4',
       coordinate: {
-        latitude: 26.1829049,
-        longitude: 91.7415736,
+        latitude: 27.603421,
+        longitude: 77.598765,
       },
     },
     {
       id: 5,
       type: 'person',
-      name: 'Toilet 5',
-      address: 'Public Toilet',
+      name: 'Location 5',
       coordinate: {
-        latitude: 26.1500392,
-        longitude: 91.7754132,
+        latitude: 27.605678,
+        longitude: 77.593456,
       },
     },
     {
       id: 6,
       type: 'person',
-      name: 'Toilet 6',
-      address: 'Public Toilet',
+      name: 'Location 6',
       coordinate: {
-        latitude: 26.2028116,
-        longitude: 91.6838358,
+        latitude: 27.600987,
+        longitude: 77.597654,
       },
     },
     {
       id: 7,
       type: 'person',
-      name: 'Toilet 7',
-      address: 'Public Toilet',
+      name: 'Location 7',
       coordinate: {
-        latitude: 26.1788182,
-        longitude: 91.7248851,
+        latitude: 27.608765,
+        longitude: 77.595432,
       },
     },
     {
       id: 8,
       type: 'person',
-      name: 'Toilet 8',
-      address: 'Public Toilet',
+      name: 'Location 8',
       coordinate: {
-        latitude: 26.1590405,
-        longitude: 91.6716502,
+        latitude: 27.602345,
+        longitude: 77.596789,
       },
     },
     {
       id: 9,
       type: 'person',
-      name: 'Toilet 9',
-      address: 'Public Toilet',
+      name: 'Location 9',
       coordinate: {
-        latitude: 26.1308205,
-        longitude: 91.7991124,
+        latitude: 27.606543,
+        longitude: 77.591234,
       },
     },
     {
       id: 10,
       type: 'person',
-      name: 'Toilet 10',
-      address: 'Public Toilet',
+      name: 'Location 10',
       coordinate: {
-        latitude: 26.1811473,
-        longitude: 91.7403057,
-      },
-    },
-    {
-      id: 11,
-      type: 'person',
-      name: 'Toilet 11',
-      address: 'Public Toilet',
-      coordinate: {
-        latitude: 26.1220686,
-        longitude: 91.7994103,
-      },
-    },
-    {
-      id: 12,
-      type: 'person',
-      name: 'Toilet 12',
-      address: 'Public Toilet',
-      coordinate: {
-        latitude: 26.1823981,
-        longitude: 91.740904,
-      },
-    },
-    {
-      id: 13,
-      type: 'person',
-      name: 'Toilet 13',
-      address: 'Public Toilet',
-      coordinate: {
-        latitude: 26.178945,
-        longitude: 91.7302329,
-      },
-    },
-    {
-      id: 14,
-      type: 'person',
-      name: 'Toilet 14',
-      address: 'Public Toilet',
-      coordinate: {
-        latitude: 26.1289696,
-        longitude: 91.7970089,
-      },
-    },
-    {
-      id: 15,
-      type: 'person',
-      name: 'Toilet 15',
-      address: 'Public Toilet',
-      coordinate: {
-        latitude: 26.1289696,
-        longitude: 91.7970089,
-      },
-    },
-    {
-      id: 16,
-      type: 'person',
-      name: 'Toilet 16',
-      address: 'Public Toilet',
-      coordinate: {
-        latitude: 26.1166601,
-        longitude: 91.7110348,
-      },
-    },
-    {
-      id: 17,
-      type: 'person',
-      name: 'Toilet 17',
-      address: 'Public Toilet',
-      coordinate: {
-        latitude: 26.1649967,
-        longitude: 91.7683161,
-      },
-    },
-    {
-      id: 18,
-      type: 'person',
-      name: 'Toilet 18',
-      address: 'Public Toilet',
-      coordinate: {
-        latitude: 26.1649967,
-        longitude: 91.7683161,
-      },
-    },
-    {
-      id: 19,
-      type: 'toilet',
-      name: 'Toilet 19',
-      address: 'Public Toilet',
-      coordinate: {
-        latitude: 26.1918624,
-        longitude: 91.7459607,
-      },
-    },
-    {
-      id: 20,
-      type: 'person',
-      name: 'Toilet 20',
-      address: 'Public Toilet',
-      coordinate: {
-        latitude: 26.1577251,
-        longitude: 91.6626548,
+        latitude: 27.604789,
+        longitude: 77.598901,
       },
     },
   ]);
@@ -294,7 +184,6 @@ export default function App() {
 
         setLocation(currentLocation);
 
-        // Update map region with current location
         const newRegion = {
           latitude: currentLocation.coords.latitude,
           longitude: currentLocation.coords.longitude,
