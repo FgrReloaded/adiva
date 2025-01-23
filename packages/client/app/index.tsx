@@ -5,6 +5,7 @@ import React, { useState } from 'react';
 import { View, ScrollView, Animated, TouchableOpacity, Pressable, ViewStyle } from 'react-native';
 
 import HealthMetricsDashboard from '~/components/Dashboard';
+import { authService } from '~/lib/auth/auth';
 
 const MenuItem = ({
   iconName,
@@ -109,15 +110,23 @@ export default function Home() {
                 </Text>
               </View>
             </View>
-            {/* <MaterialCommunityIcons name="bell-outline" size={24} color="#666" /> */}
-            {/* button login */}
-            <TouchableOpacity
-              onPress={() => router.push('/(auth)/sign-in')}
-              className="rounded-lg bg-blue-500 px-4 py-2">
-              <Text font="Poppins" className="text-white">
-                Login
-              </Text>
-            </TouchableOpacity>
+            {authService.getCurrentUser() ? (
+              <TouchableOpacity
+                onPress={async () => await authService.signOut()}
+                className="rounded-lg bg-blue-500 px-4 py-2">
+                <Text font="Poppins" className="text-white">
+                  Logout
+                </Text>
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity
+                onPress={() => router.push('/(auth)/sign-in')}
+                className="rounded-lg bg-blue-500 px-4 py-2">
+                <Text font="Poppins" className="text-white">
+                  Login
+                </Text>
+              </TouchableOpacity>
+            )}
           </View>
         </View>
         <View className="p-4">
@@ -189,7 +198,7 @@ export default function Home() {
             onPress={() => router.push('/tracker')}
           />
         </View>{' '}
-      </ScrollView>
+      </ScrollView >
 
       <View className="absolute bottom-6 right-6">
         <View className={`${isOpen ? 'flex' : 'hidden'} mb-4`}>
@@ -205,6 +214,6 @@ export default function Home() {
           </Animated.View>
         </TouchableOpacity>
       </View>
-    </View>
+    </View >
   );
 }

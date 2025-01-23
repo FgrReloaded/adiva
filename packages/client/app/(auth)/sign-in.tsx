@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 
 import { authClient } from '~/auth-client';
+import { authService } from '~/lib/auth/auth';
 
 export default function SignIn() {
   const [email, setEmail] = useState('');
@@ -22,13 +23,8 @@ export default function SignIn() {
   const handleSignIn = async () => {
     try {
       setLoading(true);
-      await authClient.signIn.email(
-        { email, password },
-        {
-          onSuccess: () => router.replace('/'),
-          onError: (error) => console.error(error.error.message),
-        }
-      );
+      await authService.signIn(email, password);
+      router.push('/');
     } catch (error) {
       console.error(error);
     } finally {

@@ -3,8 +3,9 @@ import { Text } from 'expo-dynamic-fonts';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { View, TextInput, TouchableOpacity } from 'react-native';
+import { authService } from '~/lib/auth/auth';
 
-import { authClient } from '~/auth-client';
+// import { authClient } from '~/auth-client';
 
 export default function SignUp() {
   const [name, setName] = useState('');
@@ -16,21 +17,8 @@ export default function SignUp() {
   const handleSignUp = async () => {
     try {
       setLoading(true);
-      await authClient.signUp.email(
-        {
-          name,
-          email,
-          password,
-        },
-        {
-          onError: (error) => {
-            console.error(error.error.message);
-          },
-          onSuccess: () => {
-            router.replace('/');
-          },
-        }
-      );
+      await authService.signUp(email, password);
+      router.push('/');
     } catch (error) {
       console.error(error);
     } finally {
@@ -79,9 +67,8 @@ export default function SignUp() {
         </View>
 
         <TouchableOpacity
-          className={`mt-4 rounded-xl px-5 py-4 ${
-            loading ? 'bg-blue-400' : 'bg-blue-600'
-          } shadow-lg shadow-blue-300`}
+          className={`mt-4 rounded-xl px-5 py-4 ${loading ? 'bg-blue-400' : 'bg-blue-600'
+            } shadow-lg shadow-blue-300`}
           onPress={handleSignUp}
           disabled={loading}>
           <Text font="Poppins" className="text-center text-lg font-semibold text-white">
