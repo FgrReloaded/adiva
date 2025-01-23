@@ -109,7 +109,15 @@ export default function Home() {
                 </Text>
               </View>
             </View>
-            <MaterialCommunityIcons name="bell-outline" size={24} color="#666" />
+            {/* <MaterialCommunityIcons name="bell-outline" size={24} color="#666" /> */}
+            {/* button login */}
+            <TouchableOpacity
+              onPress={() => router.push('/(auth)/sign-in')}
+              className="rounded-lg bg-blue-500 px-4 py-2">
+              <Text font="Poppins" className="text-white">
+                Login
+              </Text>
+            </TouchableOpacity>
           </View>
         </View>
         <View className="p-4">

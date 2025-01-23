@@ -30,10 +30,6 @@ const DARK_THEME: Theme = {
 
 export { ErrorBoundary } from 'expo-router';
 
-function InitialLayout() {
-  return <Slot />;
-}
-
 export default function RootLayout() {
   const hasMounted = useRef(false);
   const { colorScheme, isDarkColorScheme } = useColorScheme();
@@ -60,6 +56,8 @@ export default function RootLayout() {
   if (!isColorSchemeLoaded || !loaded) {
     return null;
   }
+
+
 
   return (
     <>
